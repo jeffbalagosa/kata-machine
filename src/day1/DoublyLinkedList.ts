@@ -21,7 +21,6 @@ export default class DoublyLinkedList<T> {
         if (this.head) {
             this.head.prev = node;
         } else {
-            // If the list was empty, new node is also the tail.
             this.tail = node;
         }
 
@@ -59,7 +58,6 @@ export default class DoublyLinkedList<T> {
         if (this.tail) {
             this.tail.next = node;
         } else {
-            // If the list was empty, new node is also the head.
             this.head = node;
         }
 
