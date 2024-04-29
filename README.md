@@ -83,14 +83,18 @@ the latest `day` folder via tspaths.  This allows us to avoid updating anything
 for testing each day.
 
 #### Testing
+
+Run all tests
 ```
 yarn test
 ```
 
-I have yet to create a testing strategy for next sets of algorithms, but we
-will get there when i cross that bridge.
+Run a specific test
+```
+npx jest {algorithmName}
+```
 
-### Help wanted
-A simple way to specify test, thinking something like `tests.json` and `cat
-test.json 2> /dev/null` to specify the tests to run.  tests.json wouldn't be
-committed.
+Example:
+```
+npx jest stack
+```
