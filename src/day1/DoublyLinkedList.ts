@@ -1,7 +1,7 @@
 type Node<T> = {
     value: T;
-    next?: Node<T> | null;
-    prev?: Node<T> | null;
+    next: Node<T> | null;
+    prev: Node<T> | null;
 };
 
 export default class DoublyLinkedList<T> {
@@ -16,23 +16,17 @@ export default class DoublyLinkedList<T> {
     }
 
     prepend(item: T): void {
-        const node = { value: item, next: this.head, prev: null } as Node<T>;
+        const node: Node<T> = { value: item, next: this.head, prev: null };
 
-        this.length++;
-        if (!this.head) {
-            this.head = node;
+        if (this.head) {
+            this.head.prev = node;
+        } else {
+            // If the list was empty, new node is also the tail.
             this.tail = node;
-            return;
         }
 
-        this.head.prev = node;
         this.head = node;
-
-        if (!this.tail) {
-            this.tail = node;
-        }
-
-        return;
+        this.length++;
     }
 
     insertAt(item: T, idx: number): void {
@@ -43,71 +37,57 @@ export default class DoublyLinkedList<T> {
         if (idx === 0) {
             this.prepend(item);
             return;
-        }
-
-        if (idx === this.length) {
+        } else if (idx === this.length) {
             this.append(item);
             return;
         }
 
-        const node = { value: item } as Node<T>;
         let current = this.head;
         for (let i = 0; i < idx - 1; i++) {
-            current = current?.next || null;
+            current = current!.next;
         }
 
-        node.next = current?.next || null;
-        node.prev = current;
+        const node: Node<T> = { value: item, next: current!.next, prev: current };
+        current!.next!.prev = node;
         current!.next = node;
         this.length++;
-
-        return;
     }
 
     append(item: T): void {
-        const node = { value: item, next: null, prev: this.tail } as Node<T>;
+        const node: Node<T> = { value: item, next: null, prev: this.tail };
 
-        this.length++;
-        if (!this.tail) {
+        if (this.tail) {
+            this.tail.next = node;
+        } else {
+            // If the list was empty, new node is also the head.
             this.head = node;
-            this.tail = node;
-            return;
         }
 
-        this.tail.next = node;
         this.tail = node;
-
-        if (!this.head) {
-            this.head = node;
-        }
-
-        return;
+        this.length++;
     }
 
     remove(item: T): T | undefined {
         let current = this.head;
         while (current) {
             if (current.value === item) {
-                this.length--;
-
                 if (current.prev) {
                     current.prev.next = current.next;
                 } else {
-                    this.head = current.next || null;
+                    this.head = current.next;
                 }
 
                 if (current.next) {
                     current.next.prev = current.prev;
                 } else {
-                    this.tail = current.prev || null;
+                    this.tail = current.prev;
                 }
 
+                this.length--;
                 return current.value;
             }
-
-            current = current?.next || null;
+            current = current.next;
         }
-
         return undefined;
     }
 
@@ -118,10 +98,9 @@ export default class DoublyLinkedList<T> {
 
         let current = this.head;
         for (let i = 0; i < idx; i++) {
-            current = current?.next || null;
+            current = current!.next;
         }
-
-        return current?.value;
+        return current!.value;
     }
 
     removeAt(idx: number): T | undefined {
@@ -131,23 +110,22 @@ export default class DoublyLinkedList<T> {
 
         let current = this.head;
         for (let i = 0; i < idx; i++) {
-            current = current?.next || null;
+            current = current!.next;
         }
-
-        this.length--;
 
         if (current!.prev) {
             current!.prev.next = current!.next;
         } else {
-            this.head = current!.next || null;
+            this.head = current!.next;
         }
 
         if (current!.next) {
             current!.next.prev = current!.prev;
         } else {
-            this.tail = current!.prev || null;
+            this.tail = current!.prev;
         }
 
+        this.length--;
         return current!.value;
     }
 }
