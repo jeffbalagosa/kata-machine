@@ -1,8 +1,8 @@
 const dir = [
     [-1, 0], // Up
-    [1, 0],  // Down
+    [1, 0], // Down
     [0, -1], // Left
-    [0, 1],  // Right
+    [0, 1], // Right
 ];
 
 /**
@@ -22,12 +22,14 @@ function walk(
     curr: Point,
     end: Point,
     seen: boolean[][],
-    path: Point[]
+    path: Point[],
 ): boolean {
     // Check if the current position is out of bounds or a wall or already visited
     if (
-        curr.x < 0 || curr.x >= maze[0].length ||
-        curr.y < 0 || curr.y >= maze.length ||
+        curr.x < 0 ||
+        curr.x >= maze[0].length ||
+        curr.y < 0 ||
+        curr.y >= maze.length ||
         maze[curr.y][curr.x] === wall ||
         seen[curr.y][curr.x]
     ) {
@@ -47,7 +49,16 @@ function walk(
     // Recursively explore each possible direction
     for (let i = 0; i < dir.length; i++) {
         const [dx, dy] = dir[i];
-        if (walk(maze, wall, { x: curr.x + dx, y: curr.y + dy }, end, seen, path)) {
+        if (
+            walk(
+                maze,
+                wall,
+                { x: curr.x + dx, y: curr.y + dy },
+                end,
+                seen,
+                path,
+            )
+        ) {
             return true; // Path found, propagate the success back up the recursion stack
         }
     }
