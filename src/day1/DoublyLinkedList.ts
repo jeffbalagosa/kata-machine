@@ -1,129 +1,83 @@
 type Node<T> = {
     value: T;
-    next: Node<T> | null;
-    prev: Node<T> | null;
+    prev?: Node<T>;
+    next?: Node<T>;
 };
 
 export default class DoublyLinkedList<T> {
     public length: number;
-    public head: Node<T> | null;
-    public tail: Node<T> | null;
+    private head?: Node<T>;
+    private tail?: Node<T>;
 
     constructor() {
         this.length = 0;
-        this.head = null;
-        this.tail = null;
+        this.head = undefined;
+        this.tail = undefined;
     }
 
     prepend(item: T): void {
-        const node: Node<T> = { value: item, next: this.head, prev: null };
+        const node = { value: item } as Node<T>;
 
-        if (this.head) {
-            this.head.prev = node;
-        } else {
-            this.tail = node;
+        this.length++;
+        if (!this.head) {
+            this.head = this.tail = node;
+            return;
         }
 
+        node.next = this.head;
+        this.head.prev = node;
         this.head = node;
-        this.length++;
     }
 
     insertAt(item: T, idx: number): void {
-        if (idx < 0 || idx > this.length) {
-            throw new Error("Index out of bounds");
+        if (idx > this.length){
+            throw new Error("Index is ouside of list.")
         }
 
-        if (idx === 0) {
-            this.prepend(item);
-            return;
-        } else if (idx === this.length) {
+        if ( idx === this.length) {
             this.append(item);
             return;
+        } else if (idx === 0) {
+            this.prepend(item);
+            return;
         }
 
-        let current = this.head;
-        for (let i = 0; i < idx - 1; i++) {
-            current = current!.next;
-        }
-
-        const node: Node<T> = { value: item, next: current!.next, prev: current };
-        current!.next!.prev = node;
-        current!.next = node;
         this.length++;
+        let curr = this.head;
+        for (let i = 0; curr && i < idx; i++){
+            curr=curr.next;
+        }
+
+        curr = curr as Node<T>;
+        const node = {value: item} as Node<T>;
+
+        node.next = curr;
+        node.prev = curr.prev;
+        curr.prev = node;
+
+        if (curr.prev){
+            curr.prev.next = curr;
+        }
+
     }
 
     append(item: T): void {
-        const node: Node<T> = { value: item, next: null, prev: this.tail };
-
-        if (this.tail) {
-            this.tail.next = node;
-        } else {
-            this.head = node;
-        }
-
-        this.tail = node;
         this.length++;
+        const node = { value: item } as Node<T>;
+
+        if (!this.tail) {
+            this.head = this.tail = node;
+            return;
+        }
+
+        node.prev = this.tail;
+        this.tail.next = node;
+        this.tail = node;
     }
 
-    remove(item: T): T | undefined {
-        let current = this.head;
-        while (current) {
-            if (current.value === item) {
-                if (current.prev) {
-                    current.prev.next = current.next;
-                } else {
-                    this.head = current.next;
-                }
+    remove(item: T): T | undefined {}
 
-                if (current.next) {
-                    current.next.prev = current.prev;
-                } else {
-                    this.tail = current.prev;
-                }
+    get(idx: number): T | undefined {}
 
-                this.length--;
-                return current.value;
-            }
-            current = current.next;
-        }
-        return undefined;
-    }
-
-    get(idx: number): T | undefined {
-        if (idx < 0 || idx >= this.length) {
-            return undefined;
-        }
-
-        let current = this.head;
-        for (let i = 0; i < idx; i++) {
-            current = current!.next;
-        }
-        return current!.value;
-    }
-
-    removeAt(idx: number): T | undefined {
-        if (idx < 0 || idx >= this.length) {
-            return undefined;
-        }
-
-        let current = this.head;
-        for (let i = 0; i < idx; i++) {
-            current = current!.next;
-        }
-
-        if (current!.prev) {
-            current!.prev.next = current!.next;
-        } else {
-            this.head = current!.next;
-        }
-
-        if (current!.next) {
-            current!.next.prev = current!.prev;
-        } else {
-            this.tail = current!.prev;
-        }
-
-        this.length--;
-        return current!.value;
-    }
+    removeAt(idx: number): T | undefined {}
 }
