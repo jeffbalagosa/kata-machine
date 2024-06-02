@@ -31,7 +31,7 @@ export default class DoublyLinkedList<T> {
 
     insertAt(item: T, idx: number): void {
         if (idx > this.length) {
-            throw new Error("Index is ouside of list.");
+            throw new Error("Index is outside of list.");
         }
 
         if (idx === this.length) {
@@ -51,13 +51,13 @@ export default class DoublyLinkedList<T> {
         curr.prev = node;
 
         if (node.prev) {
-            node.prev.next = curr;
+            node.prev.next = node;
         }
     }
 
     append(item: T): void {
-        this.length++;
         const node = { value: item } as Node<T>;
+        this.length++;
 
         if (!this.tail) {
             this.head = this.tail = node;
@@ -98,7 +98,7 @@ export default class DoublyLinkedList<T> {
 
     private getAt(idx: number): Node<T> | undefined {
         let curr = this.head;
-        for (let i = 0; curr && i < this.length; ++i) {
+        for (let i = 0; curr && i < idx; ++i) {
             curr = curr.next;
         }
         return curr;
@@ -113,18 +113,14 @@ export default class DoublyLinkedList<T> {
         }
 
         if (node.prev) {
-            node.prev = node.next;
-        }
-
-        if (node.next) {
-            node.next = node.prev;
-        }
-
-        if (node === this.head) {
+            node.prev.next = node.next;
+        } else {
             this.head = node.next;
         }
 
-        if (node === this.tail) {
+        if (node.next) {
+            node.next.prev = node.prev;
+        } else {
             this.tail = node.prev;
         }
 
